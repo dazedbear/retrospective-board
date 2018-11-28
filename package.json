@@ -32,7 +32,8 @@
     "test:coverage": "react-scripts test --coverage --notify --reporters=default --reporters=setupTestReporter.js",
     "styleguide": "styleguidist server",
     "styleguide:build": "styleguidist build",
-    "prettier": "prettier --use-tabs --single-quote --trailing-comma es5 --write {src,public,mockServer,.storybook}/**/*.{js,jsx,mjs,json,md,css,sass}"
+    "prettier": "prettier --use-tabs --single-quote --trailing-comma es5 --write {src,public,mockServer,.storybook}/**/*.{js,jsx,mjs,json,md,css,sass}",
+    "prettier:staged": "prettier --use-tabs --single-quote --trailing-comma es5 --write"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -61,7 +62,7 @@
   },
   "lint-staged": {
     "{src,public,mockServer,.storybook}/**/*.{js,jsx,json,md,css,sass}": [
-      "yarn run prettier",
+      "yarn run prettier:staged",
       "git add"
     ],
     "*.{png,jpeg,jpg,gif,svg}": [
