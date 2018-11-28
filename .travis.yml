@@ -1,0 +1,41 @@
+sudo: enabled
+language: node_js
+node_js:
+- lts/*
+branches:
+  only:
+  - master
+cache:
+  directories:
+  - node_modules
+env:
+- REACT_APP_COMMITHASH=${TRAVIS_COMMIT}
+- REACT_APP_BRANCH=${TRAVIS_BRANCH}
+- TZ=Asia/Taipei
+before_install:
+- sudo apt-get -qq update
+install:
+- yarn
+script:
+- yarn test:coverage
+- yarn build
+deploy:
+  provider: s3
+  access_key_id: "$AWS_ACCESS_KEY_ID"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+  bucket: retro.einfachstudio.com
+  region: ap-northeast-1
+  skip_cleanup: true
+  local_dir: build
+  on:
+    repo: dazedbear/retrospective-board
+    branch:
+    - master
+notifications:
+  slack:
+    rooms:
+      secure: fjrZ6VjSu/YSCiCZfmSoIp5FO36gFZFmA296HrYPAeZbmDPmHeVYPFqX2b7qT3Ct2q7z0cF+WdLvM9txbld4K+wHTXEQYAUWe+rm2eQeMCBQPXQ1TigcGpJaUi/VOor+PoNOi69VIHQI3eON6RB2Y8humevXiqHY+Qmlly0A3qw+JHgjgm+0dZEOROap7H9aWK1LncInbrDZ3h85fx8rkDzi6Qyh41bHG9JVTB04IxzlT8rNK68QD4aGHt7lOH8aODE/2q7X/dvq9/tKPFqCU37K7cS7Rwc0Urlt4PZUA4QF9WHXR0VPfQjA81ix6JlUYozddd8YTMOmlEpImZYWI2CVK+gWeR9D18j3HWdhXsVIn16Ro0butD+cch8ii85aSa3aIStkD3nLaPErnnUQDHJu7CQwWXPPdvQV0zMopzit44hfwHQctCgoMkUrHea8I3VeQYI59ywhvTRP9nqU0El2Q3pa4C+knJm7lqmSDP3P7iNZEBXYAQ6Gri7QO4Kp2DgrJ22mnIpE8H+R1iJHeZs3uXKDCtOD8jFNitFlSrzet9K/KNfnwjA4nIqyGAAOlI8p2PREQ7ZZkvSEY0DBhbbqYffGoRoG7fDoZRtTAAkiek8AVdoWr6NOGr7X7c73wsZIaDApMJ0agrmeaf4UstyzGIdHxOqqVj2STnj0qDQ=
+    template:
+    - Deploy %{result} of %{repository}@%{branch} by %{author}
+    - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) in %{duration}
+    - 'Commit message : %{commit_message}'
